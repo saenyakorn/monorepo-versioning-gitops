@@ -1,5 +1,11 @@
 # ui
 
+## 0.1.2
+
+### Patch Changes
+
+- [#10](https://github.com/saenyakorn/turborepo-versioning-demo/pull/10) [`3c67cd2`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/3c67cd20735339cd6fe511c2a690d8c41cbb6242) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Change fontSize for input component
+
 ## 0.1.1
 
 ### Patch Changes

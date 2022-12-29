@@ -1,5 +1,12 @@
 # web
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`3c67cd2`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/3c67cd20735339cd6fe511c2a690d8c41cbb6242)]:
+  - ui@0.1.2
+
 ## 0.0.3
 
 ### Patch Changes
