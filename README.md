@@ -1,73 +1,91 @@
-# Turborepo starter
+# Turborepo demo with Changesets <!-- omit in toc -->
 
-This is an official pnpm starter turborepo.
+This is a demo for [Turborepo](https://turborepo.com) and [Changesets](https://github.com/changesets/changesets).
 
-## What's inside?
+# Table of Contents <!-- omit in toc -->
 
-This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
+- [What is versioning](#what-is-versioning)
+- [Setup Changeset for monorepo](#setup-changeset-for-monorepo)
+- [How to use Changeset](#how-to-use-changeset)
+- [Question](#question)
 
-### Apps and Packages
+# What is versioning
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+# Setup Changeset for monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. Install Changeset CLI
 
-### Utilities
+   ```bash
+   pnpm add -D @changesets/cli @changesets/changelog-github
+   ```
 
-This turborepo has some additional tools already setup for you:
+2. Initialize Changeset
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+   ```bash
+   pnpm changeset init
+   ```
 
-### Build
+   At this point, you'll find out that 2 files are created:
 
-To build all apps and packages, run the following command:
+   ```
+   .changeset/config.json
+   .changeset/README.md
+   ```
 
-```
-cd my-turborepo
-pnpm run build
-```
+3. Configure the `config.json` file
 
-### Develop
+   ```json
+   {
+     "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
+     "changelog": ["@changesets/changelog-github", { "repo": "ORGANIZATION_NAME/REPO_NAME" }],
+     "commit": false,
+     "fixed": [],
+     "linked": [],
+     "access": "restricted",
+     "baseBranch": "main",
+     "updateInternalDependencies": "patch",
+     "ignore": []
+   }
+   ```
 
-To develop all apps and packages, run the following command:
+   - `changelog` - This is the changelog generator used to generate the changelog for each package. In this case, we use GitHub changelog generator.
 
-```
-cd my-turborepo
-pnpm run dev
-```
+4. Set up GitHub Action workflow for releasing apps and packages. You can copy [the action YAML](./.github/workflows/release.yaml) here.
+5. Install [Changeset bot](https://github.com/apps/changeset-bot) for your repository.
+6. You're done! Now you're ready to use Changeset to release your apps and packages.
 
-### Remote Caching
+# How to use Changeset
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+I'll assume your development workflow is:
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+1. You have the `main` branch as the production branch.
+2. You and your team members create feature branches from the `main` branch.
+3. When one of your teams finishes the task, they'll create a PR to merge their feature branch to the `main` branch.
 
-```
-cd my-turborepo
-pnpm dlx turbo login
-```
+Here's what will happen when you open a pull request to merge your feature branch to the `main` branch:
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+![](./docs/assets/open-pr.png)
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
+The changeset bot will automatically add a comment to your PR. It tells you to run the `pnpm changeset` command to create a changeset file. Click the **second link** to create a changeset file
 
-```
-pnpm dlx turbo link
-```
+![](./docs/assets/changeset-add.png)
 
-## Useful Links
+> You can see more detail what is Changeset file for https://github.com/changesets/changesets/blob/main/docs/command-line-options.md#add
 
-Learn more about the power of Turborepo:
+After creating the changeset file, you can merge your PR to the `main` branch. The GitHub action will be triggered to open the release PR. Like this one:
 
-- [Pipelines](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+![](./docs/assets/version-package.png)
+
+> If you add more changeset files, the GitHub Action will automatically update the release PR.
+
+If you're happy with the release PR, you can merge it to the `main` branch. The GitHub Action will automatically publish your apps and packages (if you want), or you can do other things like deploy your apps by modifying the `release` command in [package.json](./package.json) in the root.
+
+The current release command is to execute `pnpm changeset tag` to add Git tags for your apps and packages. Like what you see in the image below:
+
+![](./docs/assets/git-graph.png)
+
+# Question
+
+1. What if I forgot to create a changeset file for my PR?
+
+   **Answer**: you can create a changeset file for your change manually in the `main` branch by running `pnpm changeset` or `pnpm changeset add` and describing your change. Then, commit them as hotfix to the `main` branch.
