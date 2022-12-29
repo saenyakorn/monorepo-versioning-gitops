@@ -10,7 +10,8 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "release": "pnpm changeset tag && git push --follow-tags"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",

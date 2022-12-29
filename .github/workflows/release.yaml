@@ -57,7 +57,7 @@ jobs:
         with:
           createGithubReleases: true
           version: pnpm changeset version
-          publish: echo "Publishing packages"
+          publish: pnpm release
 
       - name: Echo Changeset output
         run: |
