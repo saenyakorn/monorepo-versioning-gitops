@@ -11,6 +11,14 @@ This is a demo for [Turborepo](https://turborepo.com) and [Changesets](https://g
 
 # What is versioning
 
+Versioning is a way to describe the changes of your packages. There are many versioning strategies, but the most popular one is [Semantic Versioning](https://semver.org/). There're the rules to assign version numbers:
+
+1. MAJOR version when you make incompatible API changes,
+2. MINOR version when you add functionality in a backwards compatible manner, and
+3. PATCH version when you make backwards compatible bug fixes.
+
+See more detail at https://semver.org/
+
 # Setup Changeset for monorepo
 
 1. Install Changeset CLI
