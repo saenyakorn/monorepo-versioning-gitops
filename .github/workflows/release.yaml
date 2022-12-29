@@ -20,6 +20,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          # related to issue, https://github.com/changesets/action/issues/201
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
