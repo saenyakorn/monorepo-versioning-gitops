@@ -1,5 +1,11 @@
 # web
 
+## 0.0.2
+
+### Patch Changes
+
+- [#5](https://github.com/saenyakorn/turborepo-versioning-demo/pull/5) [`731f7cb`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/731f7cbe9466dd2b2d25cba2ce93ff160a5e7a65) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Change Web app layout
+
 ## 0.0.1
 
 ### Patch Changes
