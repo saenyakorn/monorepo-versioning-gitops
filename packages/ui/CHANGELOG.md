@@ -1,5 +1,11 @@
 # ui
 
+## 0.1.3
+
+### Patch Changes
+
+- [#13](https://github.com/saenyakorn/turborepo-versioning-demo/pull/13) [`dd82bb4`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/dd82bb4ca0ac3d4f17bc1eff711c371bb7c15050) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Change input layout
+
 ## 0.1.2
 
 ### Patch Changes
