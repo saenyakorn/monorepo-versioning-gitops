@@ -1,5 +1,11 @@
 # ui
 
+## 0.1.1
+
+### Patch Changes
+
+- [#7](https://github.com/saenyakorn/turborepo-versioning-demo/pull/7) [`6afe2eb`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/6afe2eb2ab556165119b62f89517943815389d10) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Change input color styles
+
 ## 0.1.0
 
 ### Minor Changes
