@@ -6,41 +6,52 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  deployments: read
+  issues: write
+  discussions: read
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: read
+  statuses: write
+
 jobs:
   release:
     name: Versioning
-
     strategy:
       matrix:
         node-version: [16.17.0]
         os: [ubuntu-latest]
-
     runs-on: ${{ matrix.os }}
-
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+      hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
+      pullRequestNumber: ${{ steps.changesets.outputs.pullRequestNumber }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           # related to issue, https://github.com/changesets/action/issues/201
           fetch-depth: 0
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
           version: 7
           run_install: false
-
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -48,10 +59,8 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-
       - name: Create Versioning Pull Request
         id: changesets
         uses: changesets/action@v1.4.1
@@ -61,10 +70,54 @@ jobs:
           createGithubReleases: true
           version: pnpm changeset version
           publish: pnpm release
-
       - name: Echo Changeset output
         run: |
           echo "Changeset published - ${{ steps.changesets.outputs.published }}"
           echo "Changeset publishedPackages - ${{ steps.changesets.outputs.publishedPackages }}"
           echo "Changeset hasChangesets - ${{ steps.changesets.outputs.hasChangesets }}"
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
+
+  publish-docker-image:
+    name: Publish Docker image
+    if: ${{ needs.release.outputs.published == 'true' }}
+    strategy:
+      matrix:
+        node-version: [16.17.0]
+        os: [ubuntu-latest]
+        publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
+    runs-on: ${{ matrix.os }}
+    needs:
+      - release
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.2
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Run Docker build and publish command
+        # If you want to publish Docker image, you need to add '--push' option
+        run: pnpm --filter @tools/docker-utils run start build -a ${{ fromJson(matrix.publishedPackage).name }}
+      - name: Show all local Docker images
+        run: docker images
