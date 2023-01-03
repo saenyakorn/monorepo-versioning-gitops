@@ -29,7 +29,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     outputs:
       published: ${{ steps.changesets.outputs.published }}
-      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+      publishedPackages: ${{ toJSON(steps.changesets.outputs.publishedPackages) }}
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
       pullRequestNumber: ${{ steps.changesets.outputs.pullRequestNumber }}
     steps:
@@ -73,7 +73,7 @@ jobs:
       - name: Echo Changeset output
         run: |
           echo "Changeset published - ${{ steps.changesets.outputs.published }}"
-          echo "Changeset publishedPackages - ${{ steps.changesets.outputs.publishedPackages }}"
+          echo "Changeset publishedPackages - ${{ toJSON(steps.changesets.outputs.publishedPackages) }}"
           echo "Changeset hasChangesets - ${{ steps.changesets.outputs.hasChangesets }}"
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
