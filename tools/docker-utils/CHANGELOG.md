@@ -1,5 +1,11 @@
 # @tools/docker-utils
 
+## 2.0.1
+
+### Patch Changes
+
+- [#17](https://github.com/saenyakorn/turborepo-versioning-demo/pull/17) [`0abc0bb`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/0abc0bb18becd1625f60f53e98e57e36fc24b0e8) Thanks [@saenyakorn](https://github.com/saenyakorn)! - fix GitHub Action workflow expression
+
 ## 2.0.0
 
 ### Major Changes
