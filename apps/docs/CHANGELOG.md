@@ -1,5 +1,11 @@
 # docs
 
+## 0.1.4
+
+### Patch Changes
+
+- [#20](https://github.com/saenyakorn/turborepo-versioning-demo/pull/20) [`070656d`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/070656dfed2d83dceeb453a24ad3425e9d090b40) Thanks [@saenyakorn](https://github.com/saenyakorn)! - fix Release workflow
+
 ## 0.1.3
 
 ### Patch Changes
