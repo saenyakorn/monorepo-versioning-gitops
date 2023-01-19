@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: ghcr.io/saenyakorn/web:1.0.0
+          image: ghcr.io/saenyakorn/web:0.0.7
           ports:
             - containerPort: 3000
               name: web-svc
