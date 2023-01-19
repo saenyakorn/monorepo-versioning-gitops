@@ -161,7 +161,7 @@ jobs:
             echo "${NAME}:${VERSION} is updated"
           done
         env:
-          PACKAGES: ${{ needs.playground.outputs.result }}
+          PACKAGES: ${{ needs.release.outputs.publishedPackages }}
 
       - name: Show git status
         run: git status
