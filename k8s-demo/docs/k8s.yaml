@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docs
+  namespace: docs
+spec:
+  selector:
+    matchLabels:
+      name: docs
+  replicas: 1
+  template:
+    metadata:
+      name: docs
+      labels:
+        name: docs
+    spec:
+      containers:
+        - name: docs
+          image: ghcr.io/saenyakorn/docs:1.0.0
+          ports:
+            - containerPort: 3000
+              name: docs-svc
+          env:
+            - name: PORT
+              value: '80'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docs-svc
+  namespace: docs
+spec:
+  type: ClusterIP
+  selector:
+    name: docs
+  ports:
+    - name: default
+      protocol: TCP
+      port: 3000
+      targetPort: docs-svc
