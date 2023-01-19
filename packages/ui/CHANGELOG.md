@@ -1,5 +1,11 @@
 # ui
 
+## 0.1.4
+
+### Patch Changes
+
+- [#24](https://github.com/saenyakorn/turborepo-versioning-demo/pull/24) [`efaeaea`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/efaeaeabdab2d166fa7169d905b95fc5c40030a8) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Update UI
+
 ## 0.1.3
 
 ### Patch Changes
