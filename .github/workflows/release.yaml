@@ -19,47 +19,48 @@ permissions:
   security-events: read
   statuses: write
 
+env:
+  CONTAINER_REGISTRY: ghcr.io                 # For now, can not change
+  IMAGE_PREFIX: saenyakorn                    # Change to your username
+  TARGET_REPOSITORY: ${{ github.repository }} # Change this if k8s object is in another repository
+  TARGET_DIRECTORY: 'k8s-demo'                # If it is on root, type '.'
+  TARGET_BRANCH: main
+  USERNAME: ${{ github.actor }}
+  PASSWORD: ${{ github.token }}
+
 jobs:
   release:
     name: Versioning
-
     strategy:
       matrix:
         node-version: [16.17.0]
         os: [ubuntu-latest]
-
     runs-on: ${{ matrix.os }}
-
     outputs:
       published: ${{ steps.changesets.outputs.published }}
       publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
       pullRequestNumber: ${{ steps.changesets.outputs.pullRequestNumber }}
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           # related to issue, https://github.com/changesets/action/issues/201
           fetch-depth: 0
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
           version: 7
           run_install: false
-
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -67,10 +68,8 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-
       - name: Create Versioning Pull Request
         id: changesets
         uses: changesets/action@v1.4.1
@@ -80,7 +79,6 @@ jobs:
           createGithubReleases: true
           version: pnpm changeset version
           publish: pnpm release
-
       - name: Echo Changeset output
         run: |
           echo "Changeset published - ${{ steps.changesets.outputs.published }}"
@@ -88,38 +86,89 @@ jobs:
           echo "Changeset hasChangesets - ${{ steps.changesets.outputs.hasChangesets }}"
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
-  build-and-publish-docker:
-    needs:
-      - release
+  build-and-publish-docker-image:
+    name: Build and Publish Docker image
 
-    if: ${{ needs.release.published == 'true' }}
+    if: ${{ needs.release.outputs.published == 'true' }}
 
     strategy:
       matrix:
+        os: [ubuntu-latest]
         publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
 
-    uses: ./.github/workflows/build-and-publish-docker.yaml
-    with: 
-      app-name: ${{ matrix.publishedPackage.name }}
-      registry: ghcr.io
-      image-prefix: saenyakorn
-      tag: ${{ needs.release.outputs.published }}
-      push: true
+    runs-on: ${{ matrix.os }}
 
-  
-  update-k8s-object:
     needs:
       - release
-      - build-and-publish-docker
-    
-    if: ${{ needs.release.published == 'true' }}
-  
-    uses: ./.github/workflows/update-k8s.yaml
 
-    with: 
-      target-repository: ${{ github.repository }}
-      target-directory: k8s-demo
-      target-ref: main
-      registry: ghcr.io
-      image-prefix: saenyakorn
-      packages: ${{ needs.release.outputs.publishedPackages }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ env.USERNAME }}
+          password: ${{ env.PASSWORD }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: apps/$APP_NAME/Dockerfile
+          tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/$APP_NAME:$VERSION
+          # push: true
+        env:
+          APP_NAME: ${{ matrix.publishedPackage.name }}
+          VERSION: ${{ matrix.publishedPackage.version }}
+
+      - name: Show Docker image
+        run: docker images
+  
+  update-k8s-object:
+    name: Update K8s Object
+    needs:
+      - release
+      - publish-docker-image
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.TARGET_REPOSITRY }}
+          branch: ${{ env.TARGET_BRANCH }} 
+
+      - name: Update publishPackages version in YAML file
+        run: |
+          for row in $(echo "$PACKAGES" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${row} | base64 --decode | jq -r ${1}
+            }
+            NAME=$(_jq '.name')
+            VERSION=$(_jq '.version')
+            OLD_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:.*
+            NEW_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:$VERSION
+            find ./${{ env.TARGET_DIRECTORY }} -type f -exec sed -i -e "s|$OLD_VERSION|$NEW_VERSION|g" {} \;
+            echo "${NAME}:${VERSION} is updated"
+          done
+        env:
+          PACKAGES: ${{ needs.release.outputs.publishedPackages }}
+
+      - name: Show git status
+        run: git status
+
+      - name: Open Pull Request to the target repository
+        uses: peter-evans/create-pull-request@v4
+        with: 
+          title: Update Package versions
+          commit-message: Update Package versions
+
