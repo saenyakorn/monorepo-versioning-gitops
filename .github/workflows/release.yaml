@@ -100,7 +100,6 @@ jobs:
 
     needs:
       - release
-      - publish-docker-image
 
     strategy:
       matrix:
