@@ -1,5 +1,11 @@
 # docs
 
+## 0.2.1
+
+### Patch Changes
+
+- [`71d5711`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/71d57117fedfbe0a856c911342312c52b4372d6b) Thanks [@saenyakorn](https://github.com/saenyakorn)! - update docs
+
 ## 0.2.0
 
 ### Minor Changes
