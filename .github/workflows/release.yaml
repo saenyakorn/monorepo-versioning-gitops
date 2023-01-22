@@ -19,13 +19,6 @@ permissions:
   security-events: read
   statuses: write
 
-env: 
-  REGISTRY: ghcr.io
-  IMAGE_PREFIX: saenyakorn
-  TARGET_REPOSITORY: ${{ github.repository }}
-  TARGET_DIRECTORY: k8s-demo
-  TARGET_REF: main
-
 jobs:
   release:
     name: Versioning
@@ -102,6 +95,9 @@ jobs:
     strategy:
       matrix:
         publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
+    env: 
+      REGISTRY: ghcr.io
+      IMAGE_PREFIX: saenyakorn
 
     uses: ./.github/workflows/build-and-publish-docker.yaml
     with: 
@@ -119,6 +115,13 @@ jobs:
       - build-and-publish-docker
   
     uses: ./.github/workflows/update-k8s.yaml
+
+    env: 
+      REGISTRY: ghcr.io
+      IMAGE_PREFIX: saenyakorn
+      TARGET_REPOSITORY: ${{ github.repository }}
+      TARGET_DIRECTORY: k8s-demo
+      TARGET_REF: main
 
     with: 
       target-repository: ${{ env.TARGET_REPOSITORY }}}
