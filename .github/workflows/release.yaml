@@ -119,7 +119,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: apps/$APP_NAME/Dockerfile
+          file: apps/${{ env.APP_NAME }}/Dockerfile
           tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ env.APP_NAME }}:${{ env.VERSION }}
           # push: true
         env:
