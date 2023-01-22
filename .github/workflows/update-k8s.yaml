@@ -21,11 +21,18 @@ on:
       packages:
         required: true
         type: string
+      packagePublished:
+        type: boolean
+        default: false
 
 jobs:
   update-k8s:
     name: Update K8s
+
+    if: ${{ inputs.packagePublished }}
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3

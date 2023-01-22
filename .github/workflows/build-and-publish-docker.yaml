@@ -24,15 +24,20 @@ on:
       password:
         type: string
         default: ${{ github.token }}
+      packagePublished:
+        type: boolean
+        default: false
     outputs:
       image: 
         description: The output image name
-        value: ${{ jobs.build-and-publish-docker.outputs.image }}
+        value: ${{ jobs.build-and-publish-docker.outputs.image }}    
       
 jobs:
   build-and-publish-docker:
     name: Build and Publish Docker image
     runs-on: ubuntu-latest
+
+    if: ${{ inputs.packagePublished }}
 
     outputs:
       image: ${{ steps.image.outputs.IMAGE }}

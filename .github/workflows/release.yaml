@@ -96,8 +96,6 @@ jobs:
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
   build-and-publish-docker:
-    if: ${{ needs.release.outputs.published == 'true' }}
-
     needs:
       - release
 
@@ -112,11 +110,10 @@ jobs:
       image-prefix: ${{ env.IMAGE_PREFIX }}
       tag: ${{ needs.release.outputs.published }}
       push: true
+      packagePublished: ${{ needs.release.outputs.published }}
 
   
   update-k8s-object:
-    if: ${{ needs.release.outputs.published == 'true' }}
-
     needs:
       - release
       - build-and-publish-docker
@@ -130,3 +127,4 @@ jobs:
       registry: ${{ env.REGISTRY }}
       image-prefix: ${{ env.IMAGE_PREFIX }}
       packages: ${{ needs.release.outputs.publishedPackages }}
+      packagePublished: ${{ needs.release.outputs.published }}
