@@ -95,7 +95,7 @@ jobs:
           echo "Changeset hasChangesets - ${{ steps.changesets.outputs.hasChangesets }}"
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
-  publish-docker-image:
+  build-and-publish-docker-image:
     if: ${{ needs.release.outputs.published == 'true' }}
 
     needs:
