@@ -108,13 +108,10 @@ jobs:
     uses: ./.github/workflows/build-and-publish-docker.yaml
     with: 
       app-name: ${{ matrix.publishedPackage.name }}
-      registry: $REGISTRY
-      image-prefix: $IMAGE_PREFIX
+      registry: ${{ env.REGISTRY }}
+      image-prefix: ${{ env.IMAGE_PREFIX }}
       tag: ${{ needs.release.outputs.published }}
       push: true
-    secrets:
-      username: ${{ github.actor }}
-      password: ${{ github.token }}
 
   
   update-k8s-object:
@@ -127,9 +124,9 @@ jobs:
     uses: ./.github/workflows/update-k8s.yaml
 
     with: 
-      target-repository: $TARGET_REPOSITORY
-      target-directory: $TARGET_DIRECTORY
-      target-ref: $TARGET_REF
-      registry: $REGISTRY
-      image-prefix: $IMAGE_PREFIX
+      target-repository: ${{ env.TARGET_REPOSITORY }}}
+      target-directory: ${{ env.TARGET_DIRECTORY }}}
+      target-ref: ${{ env.TARGET_REF }}
+      registry: ${{ env.REGISTRY }}
+      image-prefix: ${{ env.IMAGE_PREFIX }}
       packages: ${{ needs.release.outputs.publishedPackages }}

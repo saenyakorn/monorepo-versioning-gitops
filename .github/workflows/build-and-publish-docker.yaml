@@ -18,14 +18,12 @@ on:
       push: 
         type: boolean
         default: false
-      node-version:
-        type: string
-        default: 16.x
-    secrets:
       username:
-        required: true
+        type: string
+        default: ${{ github.actor }}
       password:
-        required: true
+        type: string
+        default: ${{ github.token }}
     outputs:
       image: 
         description: The output image name
