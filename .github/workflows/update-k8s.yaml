@@ -1,0 +1,59 @@
+name: Update K8s YAML files
+
+on:
+  workflow_call:
+    inputs:
+      target-repository:
+        required: true
+        type: string
+      target-directory:
+        required: true
+        type: string
+      target-ref:
+        required: true
+        type: string
+      registry:
+        type: string
+        default: ghcr.io
+      image-prefix:
+        required: true
+        type: string
+      packages:
+        required: true
+        type: string
+
+jobs:
+  update-k8s:
+    name: Update K8s
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.target-repository }}
+          ref: ${{ inputs.target-ref }} 
+
+      - name: Update publishPackages version in YAML file
+        run: |
+          for row in $(echo "$PACKAGES" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${row} | base64 --decode | jq -r ${1}
+            }
+            NAME=$(_jq '.name')
+            VERSION=$(_jq '.version')
+            OLD_VERSION=${{ inputs.registry }}\/${{ inputs.image-prefix }}\/$NAME:.*
+            NEW_VERSION=${{ inputs.registry }}\/${{ inputs.image-prefix }}\/$NAME:$VERSION
+            find ./${{ inputs.target-directory }} -type f -exec sed -i -e "s|$OLD_VERSION|$NEW_VERSION|g" {} \;
+            echo "${NAME}:${VERSION} is updated"
+          done
+        env:
+          PACKAGES: ${{ inputs.packages }}
+
+      - name: Show git status
+        run: git status
+
+      - name: Open Pull Request to the target repository
+        uses: peter-evans/create-pull-request@v4
+        with: 
+          title: Update Package versions
+          commit-message: update package versions

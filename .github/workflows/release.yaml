@@ -19,46 +19,54 @@ permissions:
   security-events: read
   statuses: write
 
-env:
-  CONTAINER_REGISTRY: ghcr.io                 # For now, can not change
-  IMAGE_PREFIX: saenyakorn                    # Change to your username
-  TARGET_REPOSITORY: ${{ github.repository }} # Change this if k8s object is in another repository
-  TARGET_DIRECTORY: 'k8s-demo'                # If it is on root, type '.'
-  TARGET_BRANCH: main
+env: 
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: saenyakorn
+  TARGET_REPOSITORY: ${{ github.repository }}
+  TARGET_DIRECTORY: k8s-demo
+  TARGET_REF: main
 
 jobs:
   release:
     name: Versioning
+
     strategy:
       matrix:
         node-version: [16.17.0]
         os: [ubuntu-latest]
+
     runs-on: ${{ matrix.os }}
+
     outputs:
       published: ${{ steps.changesets.outputs.published }}
       publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
       pullRequestNumber: ${{ steps.changesets.outputs.pullRequestNumber }}
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           # related to issue, https://github.com/changesets/action/issues/201
           fetch-depth: 0
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
           version: 7
           run_install: false
+
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -66,8 +74,10 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
+
       - name: Create Versioning Pull Request
         id: changesets
         uses: changesets/action@v1.4.1
@@ -77,6 +87,7 @@ jobs:
           createGithubReleases: true
           version: pnpm changeset version
           publish: pnpm release
+
       - name: Echo Changeset output
         run: |
           echo "Changeset published - ${{ steps.changesets.outputs.published }}"
@@ -85,89 +96,40 @@ jobs:
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
   publish-docker-image:
-    name: Publish Docker image
     if: ${{ needs.release.outputs.published == 'true' }}
-    strategy:
-      matrix:
-        node-version: [16.17.0]
-        os: [ubuntu-latest]
-        publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
-    runs-on: ${{ matrix.os }}
-    needs:
-      - release
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.2
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: false
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-      - name: Run Docker build and publish command
-        # If you want to publish Docker image, you need to add '--push' option
-        run: pnpm --filter @tools/docker-utils run start build -a $APP
-        env: 
-          APP: ${{ fromJson(toJSON(matrix.publishedPackage)).name }}
-      - name: Show all local Docker images
-        run: docker images
-  
-  update-k8s-object:
-    name: Update K8s Object
+
     needs:
       - release
       - publish-docker-image
+
     strategy:
       matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.TARGET_REPOSITRY }}
-          branch: ${{ env.TARGET_BRANCH }} 
+        publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
 
-      - name: Update publishPackages version in YAML file
-        run: |
-          for row in $(echo "$PACKAGES" | jq -r '.[] | @base64'); do
-            _jq() {
-              echo ${row} | base64 --decode | jq -r ${1}
-            }
-            NAME=$(_jq '.name')
-            VERSION=$(_jq '.version')
-            OLD_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:.*
-            NEW_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:$VERSION
-            find ./${{ env.TARGET_DIRECTORY }} -type f -exec sed -i -e "s|$OLD_VERSION|$NEW_VERSION|g" {} \;
-            echo "${NAME}:${VERSION} is updated"
-          done
-        env:
-          PACKAGES: ${{ needs.release.outputs.publishedPackages }}
+    uses: ./.github/workflows/publish-docker.yaml
+    with: 
+      app-name: ${{ matrix.publishedPackage.name }}
+      registry: ${{ env.REGISTRY }}
+      image-prefix: ${{ env.IMAGE_PREFIX }}
+      tag: ${{ needs.release.outputs.published }}
+      username: ${{ github.actor }}
+      password: ${{ github.token }}
+      push: true
 
-      - name: Show git status
-        run: git status
+  
+  update-k8s-object:
+    if: ${{ needs.release.outputs.published == 'true' }}
 
-      - name: Open Pull Request to the target repository
-        uses: peter-evans/create-pull-request@v4
-        with: 
-          title: Update Package versions
+    needs:
+      - release
+      - publish-docker-image
+  
+    uses: ./.github/workflows/update-k8s.yaml
 
+    with: 
+      target-repository: ${{ env.TARGET_REPOSITORY }}
+      target-directory: ${{ env.TARGET_DIRECTORY }}
+      target-ref: ${{ env.TARGET_REF }}
+      registry: ${{ env.REGISTRY }}
+      image-prefix: ${{ env.IMAGE_PREFIX }}
+      packages: ${{ needs.release.outputs.publishedPackages }}
