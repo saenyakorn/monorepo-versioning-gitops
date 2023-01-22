@@ -106,7 +106,7 @@ jobs:
       matrix:
         publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
 
-    uses: ./.github/workflows/publish-docker.yaml
+    uses: ./.github/workflows/build-and-publish-docker.yaml
     with: 
       app-name: ${{ matrix.publishedPackage.name }}
       registry: ${{ env.REGISTRY }}
