@@ -120,7 +120,9 @@ jobs:
         with:
           context: .
           file: apps/${{ env.APP_NAME }}/Dockerfile
-          tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ env.APP_NAME }}:${{ env.VERSION }}
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ env.APP_NAME }}:latest
+            ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ env.APP_NAME }}:${{ env.VERSION }}
           # push: true
         env:
           APP_NAME: ${{ matrix.publishedPackage.name }}
