@@ -29,8 +29,6 @@ jobs:
   update-k8s:
     name: Update K8s
 
-    if: ${{ inputs.packagePublished }}
-
     runs-on: ubuntu-latest
 
     steps:

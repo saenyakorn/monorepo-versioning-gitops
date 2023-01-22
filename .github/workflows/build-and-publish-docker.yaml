@@ -37,8 +37,6 @@ jobs:
     name: Build and Publish Docker image
     runs-on: ubuntu-latest
 
-    if: ${{ inputs.packagePublished }}
-
     outputs:
       image: ${{ steps.image.outputs.IMAGE }}
       imageid: ${{ steps.build-and-push.outputs.imageid }}

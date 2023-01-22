@@ -92,6 +92,8 @@ jobs:
     needs:
       - release
 
+    if: ${{ needs.release.published }}
+
     strategy:
       matrix:
         publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
@@ -103,13 +105,14 @@ jobs:
       image-prefix: saenyakorn
       tag: ${{ needs.release.outputs.published }}
       push: true
-      packagePublished: ${{ needs.release.outputs.published }}
 
   
   update-k8s-object:
     needs:
       - release
       - build-and-publish-docker
+    
+    if: ${{ needs.release.published }}
   
     uses: ./.github/workflows/update-k8s.yaml
 
@@ -120,4 +123,3 @@ jobs:
       registry: ghcr.io
       image-prefix: saenyakorn
       packages: ${{ needs.release.outputs.publishedPackages }}
-      packagePublished: ${{ needs.release.outputs.published }}
