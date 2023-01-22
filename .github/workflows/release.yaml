@@ -111,9 +111,10 @@ jobs:
       registry: $REGISTRY
       image-prefix: $IMAGE_PREFIX
       tag: ${{ needs.release.outputs.published }}
+      push: true
+    secrets:
       username: ${{ github.actor }}
       password: ${{ github.token }}
-      push: true
 
   
   update-k8s-object:

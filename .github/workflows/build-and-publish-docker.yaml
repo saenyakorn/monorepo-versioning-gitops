@@ -15,18 +15,17 @@ on:
       registry: 
         type: string
         default: ghcr.io
-      username: 
-        type: string
-        default: ${{ github.actor }}
-      password:
-        type: string
-        default: ${{ github.token }}
       push: 
         type: boolean
         default: false
       node-version:
         type: string
         default: 16.x
+    secrets:
+      username:
+        required: true
+      password:
+        required: true
     outputs:
       image: 
         description: The output image name
@@ -53,8 +52,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ${{ inputs.registry }}
-          username: ${{ inputs.username }}
-          password: ${{ inputs.password }}
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
 
       - name: Output image
         id: image
