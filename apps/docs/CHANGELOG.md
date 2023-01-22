@@ -1,5 +1,11 @@
 # docs
 
+## 0.1.7
+
+### Patch Changes
+
+- [#27](https://github.com/saenyakorn/turborepo-versioning-demo/pull/27) [`bb20795`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/bb2079529f462e969f2460f4f50d1322d83445d4) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Update docs
+
 ## 0.1.6
 
 ### Patch Changes
