@@ -92,7 +92,7 @@ jobs:
     needs:
       - release
 
-    if: ${{ needs.release.published }}
+    if: ${{ needs.release.published == 'true' }}
 
     strategy:
       matrix:
@@ -112,7 +112,7 @@ jobs:
       - release
       - build-and-publish-docker
     
-    if: ${{ needs.release.published }}
+    if: ${{ needs.release.published == 'true' }}
   
     uses: ./.github/workflows/update-k8s.yaml
 
