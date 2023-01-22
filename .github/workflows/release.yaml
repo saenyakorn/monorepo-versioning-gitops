@@ -133,7 +133,7 @@ jobs:
     name: Update K8s Object
     needs:
       - release
-      - publish-docker-image
+      - build-and-publish-docker-image
 
     strategy:
       matrix:
