@@ -1,5 +1,0 @@
----
-"docs": minor
----
-
-update docs
