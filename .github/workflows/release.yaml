@@ -95,7 +95,7 @@ jobs:
           echo "Changeset hasChangesets - ${{ steps.changesets.outputs.hasChangesets }}"
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
-  build-and-publish-docker-image:
+  build-and-publish-docker:
     if: ${{ needs.release.outputs.published == 'true' }}
 
     needs:
@@ -121,7 +121,7 @@ jobs:
 
     needs:
       - release
-      - publish-docker-image
+      - build-and-publish-docker
   
     uses: ./.github/workflows/update-k8s.yaml
 
