@@ -95,15 +95,12 @@ jobs:
     strategy:
       matrix:
         publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
-    env: 
-      REGISTRY: ghcr.io
-      IMAGE_PREFIX: saenyakorn
 
     uses: ./.github/workflows/build-and-publish-docker.yaml
     with: 
       app-name: ${{ matrix.publishedPackage.name }}
-      registry: ${{ env.REGISTRY }}
-      image-prefix: ${{ env.IMAGE_PREFIX }}
+      registry: ghcr.io
+      image-prefix: saenyakorn
       tag: ${{ needs.release.outputs.published }}
       push: true
       packagePublished: ${{ needs.release.outputs.published }}
@@ -116,18 +113,11 @@ jobs:
   
     uses: ./.github/workflows/update-k8s.yaml
 
-    env: 
-      REGISTRY: ghcr.io
-      IMAGE_PREFIX: saenyakorn
-      TARGET_REPOSITORY: ${{ github.repository }}
-      TARGET_DIRECTORY: k8s-demo
-      TARGET_REF: main
-
     with: 
-      target-repository: ${{ env.TARGET_REPOSITORY }}}
-      target-directory: ${{ env.TARGET_DIRECTORY }}}
-      target-ref: ${{ env.TARGET_REF }}
-      registry: ${{ env.REGISTRY }}
-      image-prefix: ${{ env.IMAGE_PREFIX }}
+      target-repository: ${{ github.repository }}
+      target-directory: k8s-demo
+      target-ref: main
+      registry: ghcr.io
+      image-prefix: saenyakorn
       packages: ${{ needs.release.outputs.publishedPackages }}
       packagePublished: ${{ needs.release.outputs.published }}
