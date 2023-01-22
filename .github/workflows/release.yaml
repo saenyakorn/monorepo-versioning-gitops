@@ -20,10 +20,10 @@ permissions:
   statuses: write
 
 env:
-  CONTAINER_REGISTRY: ghcr.io                 # For now, can not change
-  IMAGE_PREFIX: saenyakorn                    # Change to your username
+  CONTAINER_REGISTRY: ghcr.io # For now, can not change
+  IMAGE_PREFIX: saenyakorn # Change to your username
   TARGET_REPOSITORY: ${{ github.repository }} # Change this if k8s object is in another repository
-  TARGET_DIRECTORY: 'k8s-demo'                # If it is on root, type '.'
+  TARGET_DIRECTORY: "k8s-demo" # If it is on root, type '.'
   TARGET_BRANCH: main
   USERNAME: ${{ github.actor }}
   PASSWORD: ${{ github.token }}
@@ -114,13 +114,13 @@ jobs:
           registry: ${{ env.CONTAINER_REGISTRY }}
           username: ${{ env.USERNAME }}
           password: ${{ env.PASSWORD }}
-      
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
           context: .
           file: apps/$APP_NAME/Dockerfile
-          tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/$APP_NAME:$VERSION
+          tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ env.APP_NAME }}:${{ env.VERSION }}
           # push: true
         env:
           APP_NAME: ${{ matrix.publishedPackage.name }}
@@ -128,7 +128,7 @@ jobs:
 
       - name: Show Docker image
         run: docker images
-  
+
   update-k8s-object:
     name: Update K8s Object
     needs:
@@ -145,7 +145,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ${{ env.TARGET_REPOSITRY }}
-          branch: ${{ env.TARGET_BRANCH }} 
+          branch: ${{ env.TARGET_BRANCH }}
 
       - name: Update publishPackages version in YAML file
         run: |
@@ -168,7 +168,6 @@ jobs:
 
       - name: Open Pull Request to the target repository
         uses: peter-evans/create-pull-request@v4
-        with: 
+        with:
           title: Update Package versions
           commit-message: Update Package versions
-
