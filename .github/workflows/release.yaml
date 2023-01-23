@@ -3,6 +3,15 @@ name: Release
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'The app to release. The name should be the same as name in package.json'
+        required: true
+      version:
+        description: 'The version to release. The version should be the same as version in package.json. For example, 1.0.0'
+        required: true
+
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -19,48 +28,47 @@ permissions:
   security-events: read
   statuses: write
 
-env:
-  CONTAINER_REGISTRY: ghcr.io # For now, can not change
-  IMAGE_PREFIX: saenyakorn # Change to your username
-  TARGET_REPOSITORY: ${{ github.repository }} # Change this if k8s object is in another repository
-  TARGET_DIRECTORY: "k8s-demo" # If it is on root, type '.'
-  TARGET_BRANCH: main
-  USERNAME: ${{ github.actor }}
-  PASSWORD: ${{ github.token }}
-
 jobs:
   release:
     name: Versioning
+    
     strategy:
       matrix:
         node-version: [16.17.0]
         os: [ubuntu-latest]
+    
     runs-on: ${{ matrix.os }}
+    
     outputs:
       published: ${{ steps.changesets.outputs.published }}
       publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
       pullRequestNumber: ${{ steps.changesets.outputs.pullRequestNumber }}
+    
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           # related to issue, https://github.com/changesets/action/issues/201
           fetch-depth: 0
+      
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
           version: 7
           run_install: false
+      
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+      
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -70,6 +78,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
+
       - name: Create Versioning Pull Request
         id: changesets
         uses: changesets/action@v1.4.1
@@ -79,6 +88,7 @@ jobs:
           createGithubReleases: true
           version: pnpm changeset version
           publish: pnpm release
+      
       - name: Echo Changeset output
         run: |
           echo "Changeset published - ${{ steps.changesets.outputs.published }}"
@@ -86,90 +96,23 @@ jobs:
           echo "Changeset hasChangesets - ${{ steps.changesets.outputs.hasChangesets }}"
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
-  build-and-publish-docker-image:
-    name: Build and Publish Docker image
+  deploy-with-docker:
+    name: Deploy with Docker
 
-    if: ${{ needs.release.outputs.published == 'true' }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        publishedPackage: ${{ fromJson(needs.release.outputs.publishedPackages) }}
-
-    runs-on: ${{ matrix.os }}
+    if: ${{ needs.release.outputs.published }}
 
     needs:
       - release
 
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.CONTAINER_REGISTRY }}
-          username: ${{ env.USERNAME }}
-          password: ${{ env.PASSWORD }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: apps/${{ env.APP_NAME }}/Dockerfile
-          tags: |
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ env.APP_NAME }}:latest
-            ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ env.APP_NAME }}:${{ env.VERSION }}
-          # push: true
-        env:
-          APP_NAME: ${{ matrix.publishedPackage.name }}
-          VERSION: ${{ matrix.publishedPackage.version }}
-
-      - name: Show Docker image
-        run: docker images
-
-  update-k8s-object:
-    name: Update K8s Object
-    needs:
-      - release
-      - build-and-publish-docker-image
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.TARGET_REPOSITRY }}
-          branch: ${{ env.TARGET_BRANCH }}
-
-      - name: Update publishPackages version in YAML file
-        run: |
-          for row in $(echo "$PACKAGES" | jq -r '.[] | @base64'); do
-            _jq() {
-              echo ${row} | base64 --decode | jq -r ${1}
-            }
-            NAME=$(_jq '.name')
-            VERSION=$(_jq '.version')
-            OLD_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:.*
-            NEW_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:$VERSION
-            find ./${{ env.TARGET_DIRECTORY }} -type f -exec sed -i -e "s|$OLD_VERSION|$NEW_VERSION|g" {} \;
-            echo "${NAME}:${VERSION} is updated"
-          done
-        env:
-          PACKAGES: ${{ needs.release.outputs.publishedPackages }}
-
-      - name: Show git status
-        run: git status
-
-      - name: Open Pull Request to the target repository
-        uses: peter-evans/create-pull-request@v4
-        with:
-          title: Update Package versions
-          commit-message: Update Package versions
+    uses: ./github/workflows/deploy/docker.yaml
+    with: 
+      packages: ${{ needs.release.outputs.publishedPackages }}
+      container-registry: ghcr.io
+      image-prefix: saenyakorn
+      username: ${{ github.actor }}
+      password: ${{ github.token }}
+      target-repository: ${{ github.repository }}
+      target-ref: main
+      target-directory: k8s-demo
+      push: false
+      update: true
