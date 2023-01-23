@@ -108,9 +108,9 @@ jobs:
             }
             NAME=$(_jq '.name')
             VERSION=$(_jq '.version')
-            OLD_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:.*
-            NEW_VERSION=$CONTAINER_REGISTRY\/$IMAGE_PREFIX\/$NAME:$VERSION
-            find ./${{ env.TARGET_DIRECTORY }} -type f -exec sed -i -e "s|$OLD_VERSION|$NEW_VERSION|g" {} \;
+            OLD_VERSION=${{ inputs.container-registry }}\/${{ inputs.image-prefix }}\/$NAME:.*
+            NEW_VERSION=${{ inputs.container-registry }}\/${{ inputs.image-prefix }}\/$NAME:$VERSION
+            find ./${{ inputs.target-directory }} -type f -exec sed -i -e "s|$OLD_VERSION|$NEW_VERSION|g" {} \;
             echo "${NAME}:${VERSION} is updated"
           done
         env:
