@@ -101,7 +101,7 @@ jobs:
   deploy-with-docker:
     needs:
       - release
-    if: ${{ needs.release.outputs.published }}
+    if: ${{ needs.release.outputs.published == 'true' }}
     uses: ./.github/workflows/deploy-docker.yaml
     with: 
       packages: ${{ needs.release.outputs.publishedPackages }}
