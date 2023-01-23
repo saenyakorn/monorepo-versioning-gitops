@@ -102,7 +102,7 @@ jobs:
     needs:
       - release
     if: ${{ needs.release.outputs.published }}
-    uses: ./.github/workflows/deploy/docker.yaml
+    uses: ./.github/workflows/deploy-docker.yaml
     with: 
       packages: ${{ needs.release.outputs.publishedPackages }}
       container-registry: ghcr.io
@@ -117,7 +117,7 @@ jobs:
   
   deploy-with-docker-dispatch:
     if: ${{ github.event_name == 'workflow_dispatch' }}
-    uses: ./.github/workflows/deploy/docker.yaml
+    uses: ./.github/workflows/deploy-docker.yaml
     with: 
       packages: |
         [
