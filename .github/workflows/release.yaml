@@ -38,6 +38,8 @@ jobs:
         os: [ubuntu-latest]
     
     runs-on: ${{ matrix.os }}
+
+    if: ${{ github.event_name != 'workflow_dispatch' }}
     
     outputs:
       published: ${{ steps.changesets.outputs.published }}
@@ -97,16 +99,33 @@ jobs:
           echo "Changeset pullRequestNumber - ${{ steps.changesets.outputs.pullRequestNumber }}"
 
   deploy-with-docker:
-    name: Deploy with Docker
-
-    if: ${{ needs.release.outputs.published }}
-
     needs:
       - release
-
-    uses: ./github/workflows/deploy/docker.yaml
+    if: ${{ needs.release.outputs.published }}
+    uses: ./.github/workflows/deploy/docker.yaml
     with: 
       packages: ${{ needs.release.outputs.publishedPackages }}
+      container-registry: ghcr.io
+      image-prefix: saenyakorn
+      username: ${{ github.actor }}
+      password: ${{ github.token }}
+      target-repository: ${{ github.repository }}
+      target-ref: main
+      target-directory: k8s-demo
+      push: false
+      update: true
+  
+  deploy-with-docker-dispatch:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    uses: ./.github/workflows/deploy/docker.yaml
+    with: 
+      packages: |
+        [
+          {
+            "name": "${{ github.event.inputs.app }}",
+            "version": "${{ github.event.inputs.version }}"
+          }
+        ]
       container-registry: ghcr.io
       image-prefix: saenyakorn
       username: ${{ github.actor }}
