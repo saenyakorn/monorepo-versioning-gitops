@@ -2,6 +2,8 @@ name: Configure Pre-release
 
 on:
   pull_request:
+    types:
+      - opened
     branches:
       - main
       - beta
@@ -21,19 +23,33 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
       - name: Check if pre.json exists
         id: pre-release-file
-        uses: andstor/file-existence-action@v1
-        with:
-          files: .changeset/pre.json
+        run: |
+          if [ -f ".changeset/pre.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Echo pre-release file exists
+        run: echo ${{ steps.pre-release-file.outputs.exists }}
+
+      - name: Install Changeset
+        run: npm install -g @changesets/cli
 
       - name: Enter pre-release mode for Beta
-        if: ${{ github.ref == 'refs/heads/beta' && steps.pre-release-file.outputs.exists == 'false' }}
-        run: pnpm changeset pre enter beta
+        if: ${{ github.base_ref == 'beta' && steps.pre-release-file.outputs.exists == 'false' }}
+        run: npx changeset pre enter beta
 
       - name: Exit pre-release mode for Main
-        if: ${{ github.ref == 'refs/heads/main' && steps.pre-release-file.outputs.exists == 'true' }}
-        run: pnpm changeset pre exit
+        if: ${{ github.base_ref == 'main' && steps.pre-release-file.outputs.exists == 'true' }}
+        run: npx changeset pre exit
 
       - name: Commit Changes to the Pull Request
         uses: EndBug/add-and-commit@v7
