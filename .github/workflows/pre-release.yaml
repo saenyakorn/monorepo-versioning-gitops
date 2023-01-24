@@ -2,8 +2,8 @@ name: Configure Pre-release
 
 on:
   pull_request:
-    # types:
-    #   - opened
+    types:
+      - opened
     branches:
       - main
       - beta
