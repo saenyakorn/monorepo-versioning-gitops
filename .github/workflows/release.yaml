@@ -90,7 +90,9 @@ jobs:
 
       - name: Enter pre-release mode
         if: ${{ github.ref == 'refs/heads/beta' && steps.pre-release-file.outputs.exists == 'false' }}
-        run: pnpm changeset pre enter next
+        run: |
+          pnpm changeset pre enter next
+          git add .
 
       - name: Exit pre-release mode
         if: ${{ github.ref == 'refs/heads/main' && steps.pre-release-file.outputs.exists == 'true' }}
