@@ -30,6 +30,9 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Echo pre-release file exists
+        run: echo ${{ steps.pre-release-file.outputs.exists }}
+
       - name: Enter pre-release mode for Beta
         if: ${{ github.ref == 'refs/heads/beta' && steps.pre-release-file.outputs.exists == 'false' }}
         run: pnpm changeset pre enter beta
