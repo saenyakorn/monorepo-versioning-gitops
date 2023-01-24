@@ -1,5 +1,14 @@
 # docs
 
+## 0.2.6
+
+### Patch Changes
+
+- [`b92d83e`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/b92d83e542603076ee5911cf566546068b1d724c) Thanks [@saenyakorn](https://github.com/saenyakorn)! - update something
+
+- Updated dependencies [[`79141df`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/79141df5a93b978c682e71469b4b0c8eb12c1111)]:
+  - ui@0.1.5
+
 ## 0.2.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # ui
 
+## 0.1.5
+
+### Patch Changes
+
+- [#40](https://github.com/saenyakorn/turborepo-versioning-demo/pull/40) [`79141df`](https://github.com/saenyakorn/turborepo-versioning-demo/commit/79141df5a93b978c682e71469b4b0c8eb12c1111) Thanks [@github-actions](https://github.com/apps/github-actions)! - update UI
+
 ## 0.1.4
 
 ### Patch Changes
