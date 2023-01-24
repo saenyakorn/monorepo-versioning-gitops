@@ -23,9 +23,12 @@ jobs:
 
       - name: Check if pre.json exists
         id: pre-release-file
-        uses: andstor/file-existence-action@v1
-        with:
-          files: .changeset/pre.json
+        run: |
+          if [ -f ".changeset/pre.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Enter pre-release mode for Beta
         if: ${{ github.ref == 'refs/heads/beta' && steps.pre-release-file.outputs.exists == 'false' }}
