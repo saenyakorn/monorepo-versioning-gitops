@@ -2,16 +2,17 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - beta
   workflow_dispatch:
     inputs:
       app:
-        description: 'The app to release. The name should be the same as name in package.json'
+        description: "The app to release. The name should be the same as name in package.json"
         required: true
       version:
-        description: 'The version to release. The version should be the same as version in package.json. For example, 1.0.0'
+        description: "The version to release. The version should be the same as version in package.json. For example, 1.0.0"
         required: true
-
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -31,46 +32,46 @@ permissions:
 jobs:
   release:
     name: Versioning
-    
+
     strategy:
       matrix:
         node-version: [16.17.0]
         os: [ubuntu-latest]
-    
+
     runs-on: ${{ matrix.os }}
 
     if: ${{ github.event_name != 'workflow_dispatch' }}
-    
+
     outputs:
       published: ${{ steps.changesets.outputs.published }}
       publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
       pullRequestNumber: ${{ steps.changesets.outputs.pullRequestNumber }}
-    
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           # related to issue, https://github.com/changesets/action/issues/201
           fetch-depth: 0
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
           version: 7
           run_install: false
-      
+
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      
+
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -81,6 +82,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
+      - name: Enter pre-release mode
+        if: ${{ github.ref == 'refs/heads/beta' }}
+        run: pnpm changeset pre enter next
+
+      - name: Exit pre-release mode
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: pnpm changeset pre exit
+
       - name: Create Versioning Pull Request
         id: changesets
         uses: changesets/action@v1.4.1
@@ -90,7 +99,7 @@ jobs:
           createGithubReleases: true
           version: pnpm changeset version
           publish: pnpm release
-      
+
       - name: Echo Changeset output
         run: |
           echo "Changeset published - ${{ steps.changesets.outputs.published }}"
@@ -103,7 +112,7 @@ jobs:
       - release
     if: ${{ needs.release.outputs.published == 'true' }}
     uses: ./.github/workflows/deploy-docker.yaml
-    with: 
+    with:
       packages: ${{ needs.release.outputs.publishedPackages }}
       container-registry: ghcr.io
       image-prefix: saenyakorn
@@ -114,11 +123,11 @@ jobs:
       target-directory: k8s-demo
       push: false
       update: true
-  
+
   deploy-with-docker-dispatch:
     if: ${{ github.event_name == 'workflow_dispatch' }}
     uses: ./.github/workflows/deploy-docker.yaml
-    with: 
+    with:
       packages: |
         [
           {
@@ -131,7 +140,7 @@ jobs:
       username: ${{ github.actor }}
       password: ${{ github.token }}
       target-repository: ${{ github.repository }}
-      target-ref: main
+      target-ref: refs/tags/${{ github.event.inputs.app }}@${{ github.event.inputs.version }}
       target-directory: k8s-demo
       push: false
       update: true
