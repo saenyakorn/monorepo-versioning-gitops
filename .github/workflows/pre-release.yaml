@@ -40,8 +40,8 @@ jobs:
       - name: Echo pre-release file exists
         run: echo ${{ steps.pre-release-file.outputs.exists }}
 
-      - name: Echo Base Ref
-        run: echo ${{ github.base_ref }}
+      - name: Install Changeset
+        run: npm install -g @changesets/cli
 
       - name: Enter pre-release mode for Beta
         if: ${{ github.base_ref == 'beta' && steps.pre-release-file.outputs.exists == 'false' }}
