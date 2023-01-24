@@ -1,0 +1,42 @@
+name: Configure Pre-release
+
+on:
+  pull_request:
+    branches:
+      - main
+      - beta
+
+jobs:
+  configure:
+    name: Configure Pre-release
+
+    strategy:
+      matrix:
+        node-version: [16.17.0]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Check if pre.json exists
+        id: pre-release-file
+        uses: andstor/file-existence-action@v1
+        with:
+          files: .changeset/pre.json
+
+      - name: Enter pre-release mode for Beta
+        if: ${{ github.ref == 'refs/heads/beta' && steps.pre-release-file.outputs.exists == 'false' }}
+        run: pnpm changeset pre enter beta
+
+      - name: Exit pre-release mode for Main
+        if: ${{ github.ref == 'refs/heads/main' && steps.pre-release-file.outputs.exists == 'true' }}
+        run: pnpm changeset pre exit
+
+      - name: Commit Changes to the Pull Request
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: .changeset/pre.json
+          message: "Configure pre-release mode"
