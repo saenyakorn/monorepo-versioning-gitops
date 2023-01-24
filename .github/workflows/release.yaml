@@ -82,12 +82,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
+      - name: Check if pre.json exists
+        id: pre-release-file
+        uses: andstor/file-existence-action@v1
+        with:
+          files: .changeset/pre.json
+
       - name: Enter pre-release mode
-        if: ${{ github.ref == 'refs/heads/beta' }}
+        if: ${{ github.ref == 'refs/heads/beta' && steps.pre-release-file.outputs.exists == 'false' }}
         run: pnpm changeset pre enter next
 
       - name: Exit pre-release mode
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/main' && steps.pre-release-file.outputs.exists == 'true' }}
         run: pnpm changeset pre exit
 
       - name: Create Versioning Pull Request
