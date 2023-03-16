@@ -27,7 +27,7 @@ export class AppController {
   @Get('nice')
   getNice() {
     return {
-      message: 'Nice',
+      message: 'Nice Nice',
     }
   }
 }
