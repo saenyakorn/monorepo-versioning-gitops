@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+patches:
+  - path: deployment.yaml
+
+commonLabels:
+  app: docs-beta
+
+nameSuffix: -beta
+
+images:
+  - name: docs
+    newName: ghcr.io/saenyakorn/monorepo-demo/docs
+    newTag: 1.0.0
+
+resources:
+  - ../../base
