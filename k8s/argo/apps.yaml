@@ -12,7 +12,7 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-    path: apps
+    path: k8s/apps
     repoURL: https://github.com/saenyakorn/monorepo-versioning-gitops.git
     targetRevision: HEAD
   syncPolicy: {}
