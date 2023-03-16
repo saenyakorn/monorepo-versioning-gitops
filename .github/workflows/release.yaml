@@ -8,13 +8,8 @@ on:
   workflow_dispatch:
     inputs:
       app:
-        type: choice
         description: "The app to release. The name should be the same as name in package.json"
         required: true
-        options:
-          - api
-          - web
-          - reg-scraper
       version:
         description: "The version to release. The version should be the same as version in package.json. For example, 1.0.0"
         required: true
@@ -22,10 +17,6 @@ on:
         type: choice
         description: "The environment to release. The name should be the same as name in package.json"
         required: true
-        options:
-          - prod
-          - beta
-          - dev
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -146,9 +137,9 @@ jobs:
       packages: ${{ needs.release.outputs.transformedPackages }}
       environment: ${{ needs.release.outputs.environment }}
       container-registry: ghcr.io
-      image-prefix: thinc-org/cugetreg
-      gitops-repository: thinc-org/cugetreg-gitops
-      gitops-ref: master
+      image-prefix: saenyakorn/monorepo-demo
+      gitops-repository: saenyakorn/monorepo-versioning-gitops
+      gitops-ref: main
       update-mode: pr
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -167,9 +158,9 @@ jobs:
         ]
       environment: ${{ github.event.inputs.environment }}
       container-registry: ghcr.io
-      image-prefix: thinc-org/cugetreg
-      gitops-repository: thinc-org/cugetreg-gitops
-      gitops-ref: master
+      image-prefix: saenyakorn/monorepo-demo
+      gitops-repository: saenyakorn/monorepo-versioning-gitops
+      gitops-ref: main
       update-mode: commit
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
