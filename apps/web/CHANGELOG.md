@@ -1,5 +1,11 @@
 # web
 
+## 1.0.0
+
+### Major Changes
+
+- [#52](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/52) [`5c22a22`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/5c22a22237b4d7465a98b4d53d618d28b9d6e7e9) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Initialize base projects
+
 ## 1.0.0-beta.0
 
 ### Major Changes
