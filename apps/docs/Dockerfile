@@ -47,6 +47,6 @@ COPY --from=builder /app/apps/docs/package.json .
 COPY --from=builder --chown=nextjs:nodejs /app/apps/docs/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/docs/.next/static ./apps/docs/.next/static
 
-ENV PORT 3000
+ENV PORT 3001
 
 CMD node apps/docs/server.js
