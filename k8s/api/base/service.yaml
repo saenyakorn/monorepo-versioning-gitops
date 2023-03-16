@@ -6,5 +6,5 @@ spec:
   selector:
     app: api
   ports:
-    - port: 3001
+    - port: 3002
       targetPort: api-svc
