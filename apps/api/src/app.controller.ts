@@ -23,4 +23,11 @@ export class AppController {
       message: this.configService.get<string>('GREETING'),
     }
   }
+
+  @Get('nice')
+  getNice() {
+    return {
+      message: 'Nice',
+    }
+  }
 }
