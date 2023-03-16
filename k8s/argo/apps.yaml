@@ -14,5 +14,5 @@ spec:
         - values.yaml
     path: k8s/apps
     repoURL: https://github.com/saenyakorn/monorepo-versioning-gitops.git
-    targetRevision: HEAD
+    targetRevision: main
   syncPolicy: {}
