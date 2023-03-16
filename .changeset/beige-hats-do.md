@@ -4,4 +4,4 @@
 'web': major
 ---
 
-Initilize base projects
+Initialize base projects
