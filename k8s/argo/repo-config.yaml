@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monorepo-demo-repo-config
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: monorepo-demo-repo-config
+    app.kubernetes.io/part-of: argocd
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  name:
+  project: monorepo-demo
+  type: git
+  url: https://github.com/saenyakorn/monorepo-versioning-gitops.git
