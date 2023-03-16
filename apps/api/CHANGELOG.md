@@ -1,5 +1,11 @@
 # api
 
+## 1.0.0
+
+### Patch Changes
+
+- [#66](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/66) [`5be754d`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/5be754dba9f7dedde9f050f250acd4a73d3099d1) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix API nice route
+
 ## 1.0.0-beta.2
 
 ### Patch Changes
