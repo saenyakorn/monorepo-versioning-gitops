@@ -7,6 +7,8 @@ export default function Docs() {
       <Button />
       <Input />
       <div>Hello 4</div>
+      <div>Hello 5</div>
+      <div>Hello 6</div>
     </div>
   )
 }
