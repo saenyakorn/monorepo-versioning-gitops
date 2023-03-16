@@ -10,5 +10,7 @@
     "ui": "0.1.4",
     "@tools/docker-utils": "2.0.1"
   },
-  "changesets": []
+  "changesets": [
+    "hip-cobras-do"
+  ]
 }
