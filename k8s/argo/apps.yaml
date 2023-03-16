@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monorepo-demo-apps
+  namespace: argocd
+spec:
+  destination:
+    namespace: monorepo-demo
+    server: https://kubernetes.default.svc
+  project: monorepo-demo
+  source:
+    helm:
+      valueFiles:
+        - values.yaml
+    path: apps
+    repoURL: https://github.com/saenyakorn/monorepo-versioning-gitops.git
+    targetRevision: HEAD
+  syncPolicy: {}
