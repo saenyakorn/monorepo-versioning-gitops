@@ -9,7 +9,7 @@ spec:
   destination:
     namespace: monorepo-demo
     server: {{ .Values.spec.destination.server }}
-  project: gitops-example
+  project: monorepo-demo
   source:
     path: api
     repoURL: {{ .Values.spec.source.repoURL }}
