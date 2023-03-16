@@ -1,5 +1,11 @@
 # docs
 
+## 1.0.1
+
+### Patch Changes
+
+- [#72](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/72) [`84d9364`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/84d9364ef2b27250dbcdacc4f5d33feccfc2025f) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix docs
+
 ## 1.0.1-beta.0
 
 ### Patch Changes
