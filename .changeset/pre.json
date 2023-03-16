@@ -2,7 +2,7 @@
   "mode": "exit",
   "tag": "beta",
   "initialVersions": {
-    "api": "0.0.1",
+    "api": "0.1.0-beta.0",
     "docs": "0.2.6",
     "web": "0.0.7",
     "eslint-config-custom": "0.0.0",
@@ -11,6 +11,7 @@
     "@tools/docker-utils": "2.0.1"
   },
   "changesets": [
+    "beige-hats-do",
     "rotten-hairs-hug"
   ]
 }
