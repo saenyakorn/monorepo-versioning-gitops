@@ -19,17 +19,17 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: docs-svc
-              containerPort: 4200
+              containerPort: 3001
           livenessProbe:
             httpGet:
               path: /
-              port: 4200
+              port: 3001
             initialDelaySeconds: 15
             periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /
-              port: 4200
+              port: 3001
             initialDelaySeconds: 15
             periodSeconds: 15
           resources:
