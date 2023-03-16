@@ -1,0 +1,16 @@
+{
+  "mode": "exit",
+  "tag": "beta",
+  "initialVersions": {
+    "api": "0.0.1",
+    "docs": "0.2.6",
+    "web": "0.0.7",
+    "eslint-config-custom": "0.0.0",
+    "tsconfig": "0.0.0",
+    "ui": "0.1.4",
+    "@tools/docker-utils": "2.0.1"
+  },
+  "changesets": [
+    "rotten-hairs-hug"
+  ]
+}
