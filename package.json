@@ -1,5 +1,5 @@
 {
-  "name": "turborepo-versioning-demo",
+  "name": "monorepo-versioning-gitops",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
