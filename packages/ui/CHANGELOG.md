@@ -1,5 +1,11 @@
 # ui
 
+## 0.1.5-beta.0
+
+### Patch Changes
+
+- [#77](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/77) [`eda8737`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/eda8737d6109daafc5cf0b1f561bdd6104ebddd5) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Change button text color from Red to Blue
+
 ## 0.1.4
 
 ### Patch Changes
