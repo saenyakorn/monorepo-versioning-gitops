@@ -1,5 +1,12 @@
 # web
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`eda8737`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/eda8737d6109daafc5cf0b1f561bdd6104ebddd5)]:
+  - ui@0.1.5
+
 ## 1.0.1-beta.0
 
 ### Patch Changes
