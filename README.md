@@ -1,12 +1,11 @@
 # Monorepo Versioning with GitOps <!-- omit in toc -->
 
-As [Microservices architecture][1] becomes popular recently. [Monorepo][2] is also in trend right now for Software Development concept. If you don't know what is Monorepo before. I recommend you to read [Why should use Monorepo and why you should not][3] first.
+As [Microservices architecture][1] becomes popular recently, [Monorepo][2] is also in trend right now as a software development concept. If you don't know what a Monorepo is, I recommend you to read [Why you should use Monorepo and why you should not][3] first.
 
-One of the biggest challenge of Monorepo is how to optimize deployment pipeline and versioning for your apps and packages. In this demonstration, I'll show you how.
+One of the biggest challenges of a Monorepo is how to optimize the deployment pipeline and versioning for your apps and packages. In this demonstration, I'll show you how.
 
-# Table of Contents <!-- **omit** in toc -->
+# Table of Contents <!-- omit in toc -->
 
-- [Table of Contents ](#table-of-contents-)
 - [Real use cases](#real-use-cases)
 - [Tools I used](#tools-i-used)
 - [Why versioning is important](#why-versioning-is-important)
@@ -22,7 +21,7 @@ One of the biggest challenge of Monorepo is how to optimize deployment pipeline 
   - [Scenario 3: Deploy the new feature to production environment](#scenario-3-deploy-the-new-feature-to-production-environment)
 - [How can I setup the CI/CD pipeline for my monorepo?](#how-can-i-setup-the-cicd-pipeline-for-my-monorepo)
   - [Setup Changesets](#setup-changesets)
-  - [Setup ArgoCD](#setup-argocd)
+  - [Setup ArgoCD to your cluster](#setup-argocd-to-your-cluster)
     - [Quick start](#quick-start)
 - [Q \& A](#q--a)
 - [Reference](#reference)
@@ -40,23 +39,23 @@ One of the biggest challenge of Monorepo is how to optimize deployment pipeline 
 
 # Why versioning is important
 
-Versioning is important because it helps you to track the changes of your apps and packages from CHANGELOG. It also helps you to know what's new in the latest version of your apps and packages. Moreover, it indicates what is the type of changes (feature, bug fix, breaking change, etc.)
+Versioning is important because it helps you track changes in your apps and packages from the CHANGELOG. It also enables you to understand what's new in the latest version of your apps and packages, and it indicates the type of changes made (such as feature, bug fix, breaking change, etc.).
 
-Read more about versioning here: https://en.wikipedia.org/wiki/Software_versioning
+To learn more about versioning, visit: https://en.wikipedia.org/wiki/Software_versioning.
 
 # What is ArgoCD
 
-[ArgoCD][8] is a [GitOps](https://about.gitlab.com/topics/gitops/) tool that helps you to manage your apps and packages in Kubernetes. It's a declarative way to manage your apps and packages. You can read more about ArgoCD here: [https://argoproj.github.io/argo-cd/][8]
+[ArgoCD][8] is a [GitOps](https://about.gitlab.com/topics/gitops/) tool that helps you manage your apps and packages in K8s using a declarative approach. You can learn more about ArgoCD at [https://argoproj.github.io/argo-cd/][8].
 
-ArgoCD is the pull model. It means that ArgoCD will pull the image with specific version that defined in k8s manifest file.
+ArgoCD follows the pull model, which means that it pulls the image with a specific version defined in the K8s manifest file.
 
-While, the tradditional CI/CD pipeline is the push model. It means you need to apply the k8s manifest file to the cluster after the CI/CD pipeline is finished. In addition, you may need to setup the credentials for the CI/CD pipeline to access the cluster which may leads to security issues.
+In contrast, traditional CI/CD pipelines follow the push model. This means that you must apply the K8s manifest file to the cluster after the CI/CD pipeline is finished. Additionally, you may need to set up credentials for the CI/CD pipeline to access the cluster, which can lead to security issues.
 
-You may see what is GitOps and the difference between the push model and the pull model here. [https://faun.pub/gitops-comparison-pull-and-push-88fcbaadfe45][9]
+To learn more about GitOps and the differences between the push model and the pull model, here [https://faun.pub/gitops-comparison-pull-and-push-88fcbaadfe45][9].
 
 # Demo Architecture
 
-Here is the application architecture in this repository. It's a simple application that contains 3 apps and 1 shared package.
+Here is the application architecture for this repository. It consists of three applications and one shared package. The shared package contains code that is common across the applications except api, while each of the three applications has its own unique functionality. The architecture is designed to be simple and easy to understand, making it a great starting point for developers who are new to the repository.
 
 ```mermaid
 ---
@@ -70,13 +69,13 @@ classDiagram
 
 # Deployment and Versioning Demo
 
-Versionning and deployment workflow is based on [GitFlow][9]. It's a branching model for Git. It's a good practice to use GitFlow for your project.
+Versionning and deployment workflow is based on [GitFlow][9], which is a branching model for Git.
 
 Assume that you have 3 application's environments.
 
-1. **Production** - The envrionment for end user. It's the production environment. This located in `main` branch
-2. **Staging (Beta)** - The environment for testing new features and bug fixes before releasing to production. This located in `beta` branch
-3. **Development** - This is the environment that allow developers to test their code before opening PRs to `beta`. This located in `dev` branch
+1. **Production** - This environment is for end-users and is located in the `main` branch.
+2. **Staging (Beta)** - This environment is for testing new features and bug fixes before releasing them to production. It's located in the `beta` branch.
+3. **Development** - This environment allows developers to test their code by deploying it for testing purposes without reviewing before opening PRs to `beta`. It's located in the `dev` branch.
 
 ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'rotateCommitLabel': false}}}%%
@@ -115,50 +114,50 @@ gitGraph
 
 ## Dev Deployment
 
-1. When you and your team want to develop new features or buf fixes. You may need to branch from `beta` branch. Let called it `feature` branch.
-2. After you finish your code, you can merge `feature` into `dev` branch without opening a PR. GitHub Actions will automatically deploy your changes without versioning. This allows you to test your code in the dev environment.
+1. When you and your team want to develop new features or bug fixes, you may need to create a new branch from the `beta` branch. This new branch is called a `feature` branch.
+2. After you finish your code changes, you can merge the `feature` branch into the `dev` branch without opening a PR. GitHub Actions will automatically deploy your changes to the `dev` environment, allowing you to test your code without versioning.
 
 ## Staging (Beta) Deployment
 
-1. If the dev environment is OK, you can open a PR from `feature` branch to `beta` branch. To let reviewers know what's new in this PR.
-2. Don't forget to add a changeset file to describe the changes of your apps and packages. You can read more about [adding changeset](https://github.com/changesets/changesets/blob/main/docs/adding-a-changeset.md) here.
+1. If the `dev` environment is working correctly, you can open a PR from the `feature` branch to the `beta` branch. This will let reviewers know what's new in this PR.
+2. Don't forget to add a changeset file to describe the changes in your apps and packages. You can read more about [adding changeset](https://github.com/changesets/changesets/blob/main/docs/adding-a-changeset.md) here.
 
    ![](./docs/assets/open-pr.png)
    ![](./docs/assets/changeset-add.png)
 
-3. After the PR is approved and merged (with any merge strategy), GitHub Actions will automatically open a PR called `Version Packages (Beta)` to `beta` branch. This PR will suumarize the changes of your apps and packages in this release. Like this.
+3. After the PR is approved and merged (using any merge strategy e.g. merge commit, squash commit), GitHub Actions will automatically create a new PR called **Version Packages (Beta)** that targets the `beta` branch. This PR will summarize the changes made to your apps and packages in this release, as illustrated below:
 
    ![](./docs/assets/version-packages-beta.png)
 
-4. After the PR is merged, GitHub Actions will automatically publish your affected apps to the Container Registry, in this case, GitHub Container Registry. Moreover, GitHub Actions will automatically create GitOps PR called `Update GitOps` in order to bump version of image in K8s manifests. Like this.
+4. After the PR is merged, GitHub Actions will automatically publish your affected apps to the Container Registry, which in this case is GitHub Container Registry. Additionally, GitHub Actions will automatically create a GitOps PR called **Update GitOps** to bump the version of the image in K8s manifests, as illustrated below:
 
    ![](./docs/assets/update-gitops-beta-1.png)
    ![](./docs/assets/update-gitops-beta-2.png)
 
    > This step take advantage of [GitOps][10] to manage K8s manifests.
 
-   > This step takes much time to create a PR because it needs to build Docker images for your affected apps and push them to the Container Registry.
+   > This step can take a significant amount of time to complete, as it involves building Docker images for your affected apps and pushing them to the Container Registry.
 
 ## Production Deployment
 
-1. If you want to offically release your apps and packages to the production environment, you can open a PR from `beta` branch to `main` branch. In this step, you should ask contributors is there changes works in staging environment.
-2. After the PR is approved and merged (with any merge strategy), like staging deployment, GitHub Actions will open a PR called `Version Packages` to `main` branch. This PR will suumarize the changes of your apps and packages in this release. Like this.
+1. If you want to officially release your apps and packages to the production environment, you can open a PR from the `beta` branch to the `main` branch. At this step, you should ask the contributors if their changes work in the staging environment.
+2. After the PR is approved and merged (with any merge strategy), like staging deployment, GitHub Actions will open a PR called **Version Packages** to `main` branch. This PR will summarize the changes of your apps and packages in this release, like this.
 
    ![](./docs/assets/version-packages-main.png)
 
-3. After the PR is merged. It'll publish your affected apps to the Container Registry, like staging deployment, with the bumped version. Also, `Update GitOps` will be opened as well to bump version of image in K8s manifests.
+3. After the PR is merged, your affected apps will be published to the Container Registry with the bumped version, similar to the staging deployment. Additionally, an **Update GitOps** PR will also be opened to bump the version of the image in the K8s manifests.
 
    ![](./docs/assets/update-gitops-main-1.png)
 
-4. Merge `Update GitOps` PR to `main` branch. This will automatically deploy your apps to the production environment.
+4. Merge the **Update GitOps** PR to the `main` branch. This will automatically deploy your apps to the production environment.
 
    ![](./docs/assets/update-gitops-main-2.png)
 
-> Note: Every times K8s manifests are updated, ArgoCD will automatically deploy your apps to affected environment.
+> Note: Every time the K8s manifests are updated, ArgoCD will automatically deploy your apps to the affected environment.
 
 # Sequence Diagram
 
-The flow of development is extended from [GitFlow][9] and the versioning workflow is from [Changesets Release Action][6]. The following diagram shows the flow of development and versioning as I explained above.
+The flow of development extended from [GitFlow][9] and the versioning workflow comes from [Changesets Release Action][6]. The following diagram shows the flow of development and versioning, as I explained above.
 
 ## Scenario 1: Develop new features and deploy to dev environment
 
@@ -173,7 +172,7 @@ sequenceDiagram
    GitHub ->> ArgoCD: Argocd is watched the k8s manifest. <br/> It will automatically deploy affected apps to dev environment
 ```
 
-> After this step, you who implemented the new features should test your apps in the dev environment. If it works properly, now move to the next step.
+> After this step, you, who implemented the new features, should test your apps in the dev environment. If everything works properly, you can move to the next step.
 
 ## Scenario 2: Deploy the new feature to staging environment
 
@@ -197,7 +196,7 @@ sequenceDiagram
    GitHub Action -->> GitHub: Open a PR called 'Version Packages (Beta)' <br/> to 'beta' branch
 ```
 
-> The 'Version Packages (Beta)' is a PR created by [Changesets Release Action][6] in order to summarize the changes of your apps and packages in this pre-release.
+> The **Version Packages (Beta)** is a PR created by [Changesets Release Action][6] in order to summarize the changes of your apps and packages in this pre-release.
 
 ```mermaid
 ---
@@ -224,9 +223,9 @@ sequenceDiagram
 
 ## Scenario 3: Deploy the new feature to production environment
 
-Assume that the new features on the staging environment works properly. Now, you might want to offically release your apps and packages to the production environment.
+Assuming that the new features on the staging environment work properly, you may want to officially release your apps and packages to the production environment.
 
-This step is simpler that the pre-release step.
+This step is simpler than the pre-release step.
 
 ```mermaid
 ---
@@ -265,11 +264,11 @@ sequenceDiagram
    GitHub ->> ArgoCD: Argocd is watched the k8s manifest. <br/> It will automatically deploy affected apps to production environment
 ```
 
-> You may notice that, as the developer, you don't need to do anything to deploy the new feature to the specific environment. All you need to do is to merge the PRs.
+> As a developer, you don't have to perform any manual deployment tasks to release the new feature to a specific environment. All you have to do is merge the relevant PRs.
 
 # How can I setup the CI/CD pipeline for my monorepo?
 
-There are things to do if you already have your monorepo workspace. But, most of all you need to do is
+There are things you need to do if you already have your monorepo workspace set up, but for the most part, all you need to do is:
 
 1. Setup Changeset configuration
 2. Setup ArgoCD for your k8s cluster
@@ -278,26 +277,26 @@ There are things to do if you already have your monorepo workspace. But, most of
 
 ## Setup Changesets
 
-1. Install Changesets CLI in the root of the workspace
+1. Install Changesets CLI in the root of the workspace:
 
    ```bash
    pnpm add -D -W @changesets/cli
    ```
 
-2. Initialize Changesets
+2. Initialize Changesets:
 
    ```bash
    pnpm changeset init
    ```
 
-   At this point, you'll find out that 2 files are created:
+   At this point, two files will be created:
 
    ```
    .changeset/config.json
    .changeset/README.md
    ```
 
-3. Configure the `config.json` file
+3. Configure the `config.json` file:
 
    ```diff
    {
@@ -314,13 +313,13 @@ There are things to do if you already have your monorepo workspace. But, most of
    }
    ```
 
-   - `changelog` - This is the changelog generator used to generate the changelog for each package. In this case, we use [GitHub changelog](https://github.com/changesets/changesets/tree/main/packages/changelog-github) generator.
+   - `changelog` - This specifies the changelog generator used to generate the changelog for each package. In this case, we use the [GitHub changelog](https://github.com/changesets/changesets/tree/main/packages/changelog-github) generator.
 
-   > Make sure you replace `ORGANIZATION_NAME` and `REPO_NAME` with your own GitHub organization and repository name.
+   > Be sure to replace `ORGANIZATION_NAME` and `REPO_NAME` with your own GitHub organization and repository name.
 
 4. Add [Changesets bot](https://github.com/apps/changeset-bot) for your repository.
-5. Set up GitHub Action workflow for releasing apps and packages. You can copy [my action YAML](./.github/workflows/release.yaml) here.
-6. For the apps that you want build them as Dokcer images. You need to add a `Dockerfile` to each of them. You can copy my Docker file here
+5. Set up the GitHub Action workflow for releasing apps and packages. You can copy [my action YAML](./.github/workflows/release.yaml) here.
+6. For the apps that you want to build as Docker images, you need to add a `Dockerfile` to each of them. You can copy my Docker file here
 
    - NextJS app - [Dockerfile](./apps/web/Dockerfile)
    - NestJS app - [Dockerfile](./apps/api/Dockerfile)
@@ -329,7 +328,7 @@ There are things to do if you already have your monorepo workspace. But, most of
 
 7. You're done! Now you're ready to use Changesets to release your apps and packages.
 
-## Setup ArgoCD
+## Setup ArgoCD to your cluster
 
 Please following the [official documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/) to setup ArgoCD for your k8s cluster.
 
@@ -385,7 +384,7 @@ The dashboard will be available at [https://localhost:8080](https://localhost:80
 
 # Reference
 
-Big thanks to the following articles and projects that help me write this article.
+Many thanks to the authors and contributors of the following articles and projects, which provided valuable insights and inspiration for this article.
 
 - [What are Microservices][1]
 - [Monorepo.tools][2]
