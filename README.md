@@ -335,9 +335,9 @@ Please following the [official documentation](https://argo-cd.readthedocs.io/en/
 
 Or, follow the casual version of setup ArgoCD here
 
-- [Setup ArgoCD Part 1][11]
-- [Setup ArgoCD Part 2][12]
-- [Setup ArgoCD Part 3][13]
+1. [Setup ArgoCD Part 1][11]
+2. [Setup ArgoCD Part 2][12]
+3. [Setup ArgoCD Part 3][13]
 
 ### Quick start
 
@@ -387,6 +387,20 @@ The dashboard will be available at [https://localhost:8080](https://localhost:80
 
 Big thanks to the following articles and projects that help me write this article.
 
+- [What are Microservices][1]
+- [Monorepo.tools][2]
+- [Why you should use monorepo and why you shouldn't][3]
+- [Turborepo][4]
+- [Changesets][5]
+- [Changesets Action][6]
+- [GitHub Actions][7]
+- [ArgoCD][8]
+- [The GitOps Comparison: Pull and Push][9]
+- [GitOps Concept][10]
+- [Setup ArgoCD Part 1][11]
+- [Setup ArgoCD Part 2][12]
+- [Setup ArgoCD Part 3][13]
+
 [1]: https://microservices.io/ 'What are Microservices'
 [2]: https://monorepo.tools/ 'Monorepo.tools'
 [3]: https://lembergsolutions.com/blog/why-you-should-use-monorepo-and-why-you-shouldnt "Why you should use monorepo and why you shouldn't"
@@ -397,7 +411,7 @@ Big thanks to the following articles and projects that help me write this articl
 [8]: https://argo-cd.readthedocs.io/en/stable/ 'ArgoCD'
 [9]: https://faun.pub/gitops-comparison-pull-and-push-88fcbaadfe45 'The GitOps Comparison: Pull and Push'
 [9]: https://nvie.com/posts/a-successful-git-branching-model/ 'Git Flow'
-[10]: https://www.weave.works/technologies/gitops/ 'GitOps'
+[10]: https://www.weave.works/technologies/gitops/ 'GitOps Concept'
 [11]: https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%A5%E0%B8%AD%E0%B8%87-setup-gitops-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-argocd-kustomize-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-1-8db644ccbd49 'Setup Argp CD Part 1'
-[12]: (https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%A5%E0%B8%AD%E0%B8%87-setup-gitops-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-argocd-kustomize-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-2-e8016ec4cb07) 'Setup Argp CD Part 2'
-[13]: (https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%A5%E0%B8%AD%E0%B8%87-setup-gitops-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-argocd-kustomize-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-3-42c4fc714078) 'Setup Argp CD Part 3'
+[12]: https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%A5%E0%B8%AD%E0%B8%87-setup-gitops-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-argocd-kustomize-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-2-e8016ec4cb07 'Setup Argp CD Part 2'
+[13]: https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%A5%E0%B8%AD%E0%B8%87-setup-gitops-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-argocd-kustomize-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-3-42c4fc714078 'Setup Argp CD Part 3'
