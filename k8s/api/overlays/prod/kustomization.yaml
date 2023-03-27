@@ -12,7 +12,7 @@ nameSuffix: -prod
 images:
 - name: api
   newName: ghcr.io/saenyakorn/monorepo-demo/api
-  newTag: 1.1.0
+  newTag: 1.1.1
 
 resources:
 - ../../base
