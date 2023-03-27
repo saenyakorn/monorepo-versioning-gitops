@@ -1,5 +1,11 @@
 # api
 
+## 1.1.1-beta.0
+
+### Patch Changes
+
+- [#89](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/89) [`7e1bbc1`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/7e1bbc1dad6a3da43cc2846f322447a6210e5abf) Thanks [@saenyakorn](https://github.com/saenyakorn)! - fix Dockerfile for api
+
 ## 1.1.0
 
 ### Minor Changes
