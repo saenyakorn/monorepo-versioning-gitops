@@ -23,7 +23,7 @@ One of the biggest challenges of a Monorepo is how to optimize the deployment pi
   - [Setup Changesets](#setup-changesets)
   - [Setup ArgoCD to your cluster](#setup-argocd-to-your-cluster)
     - [Quick start](#quick-start)
-- [Q \& A](#q--a)
+- [FAQ](#faq)
 - [Reference](#reference)
 
 # Real use cases
@@ -340,7 +340,26 @@ Or, follow the casual version of setup ArgoCD here
 
 ### Quick start
 
-After you [install ArgoCD](https://argo-cd.readthedocs.io/en/stable/getting_started/), you may need to create a app, project, and repository credentials. Please run
+Install ArgoCD in `argocd` namespace
+
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Change the `argocd-server` service type to `LoadBalancer`
+
+```bash
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+```
+
+Get the default password of `admin` account, please wait for a while until the `argocd-initial-admin-secret` is created.
+
+```bash
+echo $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+```
+
+Setup Application for ArgoCD
 
 ```bash
 kubectl apply -f ./k8s/argo
@@ -356,7 +375,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 The dashboard will be available at [https://localhost:8080](https://localhost:8080)
 
-# Q & A
+# FAQ
 
 1. What if I forgot to create a changeset file for my PR?
 
