@@ -1,14 +1,14 @@
 import { Button, Input } from 'ui'
 
+import pk from '../package.json'
+
 export default function Docs() {
   return (
     <div>
       <h1>Docs</h1>
+      <p>Version {pk.version}</p>
       <Button />
       <Input />
-      <div>Hello 4</div>
-      <div>Hello 5</div>
-      <div>Hello 6</div>
     </div>
   )
 }
