@@ -1,12 +1,12 @@
 {
   "name": "api",
-  "version": "1.1.0",
+  "version": "1.1.1-beta.0",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build --webpack",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
