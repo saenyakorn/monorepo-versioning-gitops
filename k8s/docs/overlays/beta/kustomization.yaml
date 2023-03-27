@@ -12,7 +12,7 @@ nameSuffix: -beta
 images:
 - name: docs
   newName: ghcr.io/saenyakorn/monorepo-demo/docs
-  newTag: 1.0.2-beta.0
+  newTag: 1.1.0-beta.0
 
 resources:
 - ../../base
