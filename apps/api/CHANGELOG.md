@@ -1,5 +1,11 @@
 # api
 
+## 1.1.0
+
+### Minor Changes
+
+- [#83](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/83) [`03e4e87`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/03e4e87fd3a33d94d2b27e6f385fb3007ade7808) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Add version number for web, docs and api
+
 ## 1.1.0-beta.0
 
 ### Minor Changes
