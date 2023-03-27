@@ -12,7 +12,7 @@ nameSuffix: -dev
 images:
 - name: api
   newName: ghcr.io/saenyakorn/monorepo-demo/api
-  newTag: dev-d3dea9b1390c7f11018cf5b5783ae8b5e76466d6
+  newTag: dev-5ec7fcb39c9b4a5ec041eb85bc16ba658bddc7f7
 
 resources:
 - ../../base
