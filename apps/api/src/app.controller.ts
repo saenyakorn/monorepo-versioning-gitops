@@ -24,10 +24,10 @@ export class AppController {
     }
   }
 
-  @Get('nice')
+  @Get('world')
   getNice() {
     return {
-      message: 'Nice Nice',
+      message: this.appService.getWorld(),
     }
   }
 }
