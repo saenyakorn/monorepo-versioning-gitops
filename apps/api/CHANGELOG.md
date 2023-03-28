@@ -1,5 +1,15 @@
 # api
 
+## 1.2.0-beta.0
+
+### Minor Changes
+
+- [#95](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/95) [`938b4ef`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/938b4ef687ced2885b6829982da54a85cf87c00e) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Modify hello endpoint
+
+### Patch Changes
+
+- [#97](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/97) [`ff2e67a`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/ff2e67a6b9737bba14cbaef03aa256d6deb01d32) Thanks [@saenyakorn](https://github.com/saenyakorn)! - Fix modify world endpoint
+
 ## 1.1.1
 
 ### Patch Changes
