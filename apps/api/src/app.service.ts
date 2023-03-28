@@ -7,4 +7,8 @@ export class AppService {
   getHello(): string {
     return `Hello World World version ${pk.version} `
   }
+
+  getWorld(): string {
+    return `World version ${pk.version} `
+  }
 }
