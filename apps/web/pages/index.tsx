@@ -4,12 +4,10 @@ import pk from '../package.json'
 
 export default function Web() {
   return (
-    <div>
+    <section>
       <h1>Hello Web developer</h1>
       <p>Version {pk.version}</p>
       <Button />
-    </div>
+    </section>
   )
 }
-
-// comment
