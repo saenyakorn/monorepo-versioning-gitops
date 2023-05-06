@@ -1,5 +1,11 @@
 # web
 
+## 1.1.2-beta.0
+
+### Patch Changes
+
+- [#112](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/112) [`2faaf98`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/2faaf98f5ab64f9711138c1a10d9cf3bba285b6b) Thanks [@saenyakorn](https://github.com/saenyakorn)! - fix remove content in web
+
 ## 1.1.1
 
 ### Patch Changes
