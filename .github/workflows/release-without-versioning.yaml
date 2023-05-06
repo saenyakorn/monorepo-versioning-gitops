@@ -24,12 +24,7 @@ jobs:
   release:
     name: Release without versioning
 
-    strategy:
-      matrix:
-        node-version: [18]
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     if: ${{ github.event_name != 'workflow_dispatch' }}
 
@@ -46,13 +41,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
-          version: 7
+          version: 8
           run_install: false
 
       - name: Install turbo

@@ -8,14 +8,14 @@ on:
   workflow_dispatch:
     inputs:
       app:
-        description: "The app to release. The name should be the same as name in package.json"
+        description: 'The app to release. The name should be the same as name in package.json'
         required: true
       version:
-        description: "The version to release. The version should be the same as version in package.json. For example, 1.0.0"
+        description: 'The version to release. The version should be the same as version in package.json. For example, 1.0.0'
         required: true
       environment:
         type: choice
-        description: "The environment to release. The name should be the same as name in package.json"
+        description: 'The environment to release. The name should be the same as name in package.json'
         required: true
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
@@ -37,12 +37,7 @@ jobs:
   release:
     name: Versioning
 
-    strategy:
-      matrix:
-        node-version: [18]
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     if: ${{ github.event_name != 'workflow_dispatch' }}
 
@@ -64,13 +59,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
-          version: 7
+          version: 8
           run_install: false
 
       - name: Get pnpm store directory
@@ -85,12 +80,13 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Create Versioning Pull Request
         id: changesets
-        uses: changesets/action@v1.4.1
+        uses: changesets/action@v1.4.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "beta",
   "initialVersions": {
     "api": "1.2.0",
@@ -9,5 +9,7 @@
     "tsconfig": "0.0.0",
     "ui": "0.1.5"
   },
-  "changesets": []
+  "changesets": [
+    "poor-spoons-draw"
+  ]
 }
