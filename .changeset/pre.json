@@ -1,0 +1,13 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "api": "1.2.0",
+    "docs": "1.1.0",
+    "web": "1.1.1",
+    "eslint-config-custom": "0.0.0",
+    "tsconfig": "0.0.0",
+    "ui": "0.1.5"
+  },
+  "changesets": []
+}
