@@ -8,14 +8,14 @@ on:
   workflow_dispatch:
     inputs:
       app:
-        description: 'The app to release. The name should be the same as name in package.json'
+        description: "The app to release. The name should be the same as name in package.json"
         required: true
       version:
-        description: 'The version to release. The version should be the same as version in package.json. For example, 1.0.0'
+        description: "The version to release. The version should be the same as version in package.json. For example, 1.0.0"
         required: true
       environment:
         type: choice
-        description: 'The environment to release. The name should be the same as name in package.json'
+        description: "The environment to release. The name should be the same as name in package.json"
         required: true
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
@@ -101,7 +101,7 @@ jobs:
       - name: Transform Packages
         id: transform-packages
         run: |
-          PACKAGES=$(echo $PACKAGES | jq -c 'map_values({name:.name,imageTag:.version})')
+          PACKAGES=$(echo $PACKAGES | jq -c 'map_values({name:.name,ref:"refs/tags/\(.name)@\(.version)",imageTag:.version})')
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
         env:
           PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
@@ -152,6 +152,7 @@ jobs:
         [
           {
             "name": "${{ github.event.inputs.app }}",
+            "ref": "refs/tags/${{ github.event.inputs.app }}@${{ github.event.inputs.version }}",
             "imageTag": "${{ github.event.inputs.version }}"
           }
         ]
