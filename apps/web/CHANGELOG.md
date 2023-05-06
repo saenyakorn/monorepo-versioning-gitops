@@ -1,5 +1,11 @@
 # web
 
+## 1.1.1
+
+### Patch Changes
+
+- [#103](https://github.com/saenyakorn/monorepo-versioning-gitops/pull/103) [`928d96f`](https://github.com/saenyakorn/monorepo-versioning-gitops/commit/928d96f0c25fd840bb234839075107166aeae782) Thanks [@saenyakorn](https://github.com/saenyakorn)! - fix semantic tag
+
 ## 1.1.1-beta.0
 
 ### Patch Changes
