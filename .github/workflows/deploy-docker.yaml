@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ matrix.packages.ref }}
+          ref: ref/tags/${{ matrix.packages.name }}@${{ matrix.packages.imageTag }}
 
       - name: Check if Dockerfile exists
         id: check-dockerfile
