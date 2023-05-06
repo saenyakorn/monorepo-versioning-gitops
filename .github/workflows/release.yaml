@@ -63,6 +63,22 @@ jobs:
           version: 8
           run_install: false
 
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
       - name: Create Versioning Pull Request
         id: changesets
         uses: changesets/action@v1.4.2
@@ -70,6 +86,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           createGithubReleases: true
+          version: pnpm changeset version
           publish: pnpm release
 
       - name: Transform Packages
