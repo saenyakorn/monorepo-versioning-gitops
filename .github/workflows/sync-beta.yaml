@@ -20,7 +20,7 @@ jobs:
         node-version: [18]
         os: [ubuntu-latest]
 
-    runs-on: {{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     # Only run this job if the pull request is merged and the base branch is 'changeset-release/main', or if manually triggered
     if: ${{ (github.event.pull_request.merged == true && github.head_ref == 'changeset-release/main') || github.event_name == 'workflow_dispatch' }}
@@ -39,10 +39,8 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git stash save "Temporary stash before rebase"
           git fetch origin main
           git rebase origin/main
-          git stash list | grep -q 'Temporary stash before rebase' && git stash apply --index || true
 
 
       # force enter prerelease mode for beta
@@ -56,7 +54,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
         run: |
-
           git add .changeset/pre.json
           git commit -m "Enter pre-release mode" || true
           git push origin beta --force
