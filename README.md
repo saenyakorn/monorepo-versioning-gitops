@@ -7,6 +7,8 @@ One of the biggest challenges of a Monorepo is how to optimize the deployment pi
 # Table of Contents <!-- omit in toc -->
 
 - [Real use cases](#real-use-cases)
+- [Blog posts](#blog-posts)
+  - [For Thais](#for-thais)
 - [Tools I used](#tools-i-used)
 - [Why versioning is important](#why-versioning-is-important)
 - [What is ArgoCD](#what-is-argocd)
@@ -29,6 +31,20 @@ One of the biggest challenges of a Monorepo is how to optimize the deployment pi
 # Real use cases
 
 - [CU Get Reg](https://github.com/thinc-org/cugetreg)
+
+# Blog posts
+
+## For Thais
+
+- [มาทำ Versioning + GitOps + K8s บน Monorepo กันเถอะ! Part I](https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%97%E0%B8%B3-versioning-gitops-k8s-%E0%B8%9A%E0%B8%99-monorepo-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-i-b98bb35c1010) - **Introduction**: How important is Monorepo, versioning and GitOps? And what are the challenges?
+
+- [มาทำ Versioning + GitOps + K8s บน Monorepo กันเถอะ! Part II](https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%97%E0%B8%B3-versioning-gitops-k8s-%E0%B8%9A%E0%B8%99-monorepo-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-ii-2a5e180fbf0f) - **Versioning Tutorial**: What is versioning and how to do it in Monorepo? What tools can we use?
+
+- [มาทำ Versioning + GitOps + K8s บน Monorepo กันเถอะ! Part III](https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%97%E0%B8%B3-versioning-gitops-k8s-%E0%B8%9A%E0%B8%99-monorepo-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-iii-6598e57084ed) - **A whole development process**: How to work with Gitflow and where to apply versioning and GitOps in our workflows?
+
+- [มาทำ Versioning + GitOps + K8s บน Monorepo กันเถอะ! Part IV](https://medium.com/thinc-org/%E0%B8%A1%E0%B8%B2%E0%B8%97%E0%B8%B3-versioning-gitops-k8s-%E0%B8%9A%E0%B8%99-monorepo-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-part-iv-5fc9771e85c0) - **The Implementation**: How to implement the whole development process in Part III? What each step of the workflow is?
+
+- 🚧 มาทำ Versioning + GitOps + K8s บน Monorepo กันเถอะ! Part V - **How to pre-release**: How to pre-release your packages and apps? What is the workflow? It's specially difficult when you have a monorepo.
 
 # Tools I used
 
