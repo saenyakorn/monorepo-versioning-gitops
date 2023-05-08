@@ -20,7 +20,7 @@ jobs:
         node-version: [18]
         os: [ubuntu-latest]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: {{ matrix.os }}
 
     # Only run this job if the pull request is merged and the base branch is 'changeset-release/main', or if manually triggered
     if: ${{ (github.event.pull_request.merged == true && github.head_ref == 'changeset-release/main') || github.event_name == 'workflow_dispatch' }}
@@ -35,9 +35,6 @@ jobs:
       - name: Install Changeset
         run: npm install -g @changesets/cli
 
-      - name: Enter pre-release mode for Beta
-        run: npx changeset pre exit
-
       - name: Rebase beta on main
         run: |
           git config --global user.name "github-actions[bot]"
@@ -45,11 +42,15 @@ jobs:
           git stash save "Temporary stash before rebase"
           git fetch origin main
           git rebase origin/main
-          git stash apply --index || git stash drop
+          git stash list | grep -q 'Temporary stash before rebase' && git stash apply --index || true
+
 
       # force enter prerelease mode for beta
       - name: Enter pre-release mode for Beta
-        run: npx changeset pre enter beta
+        run: |
+          if [ ! -f .changeset/pre.json ]; then
+            npx changeset pre enter beta
+          fi
 
       - name: Push beta to origin
         env:
