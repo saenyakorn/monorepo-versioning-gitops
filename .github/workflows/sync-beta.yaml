@@ -32,21 +32,30 @@ jobs:
           ref: beta
           fetch-depth: 0
 
-      - name: Rebase beta to main
-        run: |
-          git rebase origin/main
-
       - name: Install Changeset
         run: npm install -g @changesets/cli
+
+      - name: Enter pre-release mode for Beta
+        run: npx changeset pre exit
+
+      - name: Rebase beta on main
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git stash save "Temporary stash before rebase"
+          git fetch origin main
+          git rebase origin/main
+          git stash apply --index || git stash drop
 
       # force enter prerelease mode for beta
       - name: Enter pre-release mode for Beta
         run: npx changeset pre enter beta
 
       - name: Push beta to origin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add .changeset/pre.json
-          git commit -m "Enter pre-release mode"
-          git push origin beta
+          git commit -m "Enter pre-release mode" || true
+          git push origin beta --force
